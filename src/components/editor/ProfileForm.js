@@ -15,13 +15,7 @@ const ProfileForm = () => {
     reset,
   } = useForm({
     resolver: zodResolver(profileSchema),
-    defaultValues: portfolioData.profile,
-    mode: "onChange",
   });
-
-  useEffect(() => {
-    reset(portfolioData.profile);
-  }, [portfolioData.profile, reset]);
 
   const handleChange = (e) => {
     updateProfile({ [e.target.name]: e.target.value });
@@ -42,6 +36,9 @@ const ProfileForm = () => {
           {...register("name")}
           onChange={handleChange}
           error={errors.name?.message}
+          placeholder={
+            portfolioData.profile.name || "Masukkan nama lengkap Anda"
+          }
         />
         <Input
           label="Titel Pekerjaan"
@@ -50,6 +47,10 @@ const ProfileForm = () => {
           {...register("title")}
           onChange={handleChange}
           error={errors.title?.message}
+          placeholder={
+            portfolioData.profile.title ||
+            "Contoh: Frontend Developer, Desainer Grafis"
+          }
         />
         <Textarea
           label="Deskripsi Singkat"
@@ -57,6 +58,10 @@ const ProfileForm = () => {
           {...register("description")}
           onChange={handleChange}
           error={errors.description?.message}
+          placeholder={
+            portfolioData.profile.description ||
+            "Ceritakan sedikit tentang diri Anda dan apa yang Anda lakukan..."
+          }
         />
       </form>
     </div>
