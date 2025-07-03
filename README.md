@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+Markdown
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Portfolio Page Builder (React.js)
 
-## Available Scripts
+Aplikasi pembuat halaman portofolio sederhana yang dibangun dengan React.js. Aplikasi ini memungkinkan pengguna membuat portofolio dinamis yang menampilkan riwayat pekerjaan, dengan kemampuan kustomisasi seperti gambar latar belakang dan profil, detail profil singkat, dan daftar pengalaman kerja. Aplikasi ini juga menyediakan pratinjau real-time dan menyimpan data secara persisten di penyimpanan lokal browser.
 
-In the project directory, you can run:
+## Fitur Utama
 
-### `npm start`
+- **Pembuatan Portofolio Dinamis:** Pengguna dapat menambah, mengedit, dan menghapus detail portofolio mereka.
+- **Kustomisasi Gambar:** Unggah gambar latar belakang (cover) dan gambar profil (avatar) untuk personalisasi halaman portofolio.
+- **Profil Singkat:** Bagian untuk menampilkan nama, titel pekerjaan, dan deskripsi singkat tentang pengguna.
+- **Bagian Pengalaman Kerja:** Tambah hingga 10 item portofolio, masing-masing memuat posisi pekerjaan, nama perusahaan, deskripsi singkat, dan tanggal mulai serta tanggal akhir pekerjaan.
+- **Pratinjau Real-time:** Lihat perubahan yang Anda buat pada formulir secara instan di panel pratinjau tanpa perlu menyimpan terlebih dahulu.
+- **Penyimpanan Data Persisten:** Data portofolio disimpan secara persisten di `localStorage` browser, sehingga data tetap ada saat form dibuka kembali atau saat browser ditutup dan dibuka lagi.
+- **Validasi Formulir:** Setiap input data divalidasi untuk memastikan integritas dan format yang benar.
+- **Desain Responsif:** Tampilan website dapat berjalan dengan baik di berbagai ukuran layar, termasuk desktop, tablet, dan mobile.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Tumpukan Teknologi
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Framework:** React.js (menggunakan Create React App)
+- **Bahasa Pemrograman:** JavaScript (ES6+)
+- **Styling:** Tailwind CSS
+- **Routing:** `react-router-dom`
+- **Manajemen Formulir:** `react-hook-form`
+- **Validasi Data:** `zod` (dikombinasikan dengan `@hookform/resolvers`)
+- **Penyimpanan Data Persisten:** Browser `localStorage` (melalui custom hook `useLocalStorage`)
+- **ID Unik:** `nanoid` (untuk menghasilkan ID unik untuk setiap item portofolio)
 
-### `npm test`
+## Struktur Proyek
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+portfolio-page-builder/
+├── public/ // File statis (index.html, dll.)
+├── src/
+│ ├── App.js // Komponen utama aplikasi, menangani routing
+│ ├── index.js // Titik masuk aplikasi React
+│ ├── components/ // Komponen UI yang dapat digunakan kembali
+│ │ ├── common/ // Komponen generik (Button, Input, Textarea, dll.)
+│ │ │ ├── Button.js
+│ │ │ ├── Input.js
+│ │ │ └── Textarea.js
+│ │ ├── layout/ // Komponen tata letak (Header, Footer)
+│ │ │ ├── Header.js
+│ │ │ └── Footer.js
+│ │ ├── editor/ // Komponen khusus untuk tampilan editor
+│ │ │ ├── ImageUploader.js
+│ │ │ ├── PortfolioItemEditor.js
+│ │ │ ├── PortfolioItemsSection.js
+│ │ │ └── ProfileForm.js
+│ │ └── viewer/ // Komponen khusus untuk tampilan pratinjau
+│ │ ├── PortfolioCard.js
+│ │ └── PortfolioViewer.js
+│ ├── contexts/ // React Context API untuk manajemen state global
+│ │ └── PortfolioContext.js
+│ ├── hooks/ // Custom React Hooks
+│ │ └── useLocalStorage.js
+│ ├── lib/ // Fungsi utilitas (validasi data, dll.)
+│ │ └── validation.js
+│ ├── pages/ // Views/Halaman untuk react-router-dom
+│ │ ├── EditPortfolioPage.js
+│ │ └── ViewPortfolioPage.js
+│ └── index.css // Global CSS (direktif Tailwind CSS di sini)
+├── .gitignore // File yang akan diabaikan oleh Git
+├── package.json // Metadata proyek dan daftar dependensi
+├── jsconfig.json // Konfigurasi JavaScript untuk editor/linter
+├── tailwind.config.js // Konfigurasi Tailwind CSS
+└── postcss.config.js // Konfigurasi PostCSS
 
-### `npm run build`
+## Skema Data
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Data portofolio disimpan sebagai string JSON di `localStorage` browser di bawah kunci `portfolioBuilderData`. Struktur umum data yang disimpan adalah sebagai berikut:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+const portfolioData = {
+  backgroundImg: "string_base64_gambar_atau_null", // Gambar cover/background dalam format Base64
+  profileImg: "string_base64_gambar_atau_null",   // Gambar profil/avatar dalam format Base64
+  profile: {
+    name: "Nama Anda",            // Nama lengkap pengguna
+    title: "Titel Pekerjaan",     // Titel/posisi pekerjaan pengguna
+    description: "Deskripsi singkat tentang diri Anda..." // Deskripsi singkat
+  },
+  portfolioItems: [ // Array objek pengalaman kerja (minimal 0, maksimal 10)
+    {
+      id: "unique_id_string", // ID unik untuk setiap item (dihasilkan oleh nanoid)
+      position: "Software Engineer", // Posisi pekerjaan
+      company: "Tech Solutions Inc.", // Nama perusahaan
+      description: "Developed and maintained web applications...", // Deskripsi singkat pekerjaan
+      startDate: "2022-01-15", // Tanggal mulai pekerjaan (format YYYY-MM-DD)
+      endDate: "2024-05-30"    // Tanggal akhir pekerjaan (format YYYY-MM-DD)
+    },
+    // ... item portofolio lainnya
+  ]
+};
+Cara Menjalankan Aplikasi
+Ikuti langkah-langkah di bawah ini untuk menginisialisasi dan menjalankan aplikasi di lingkungan pengembangan lokal Anda:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Kloning repositori:
+Buka terminal atau Git Bash, lalu jalankan:
 
-### `npm run eject`
+Bash
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+git clone [https://github.com/RDwiKurniawan/portfolio-page.git](https://github.com/RDwiKurniawan/portfolio-page.git)
+cd portfolio-page
+(Ganti https://github.com/RDwiKurniawan/portfolio-page.git dengan URL repositori Anda jika berbeda, atau sesuaikan path cd jika Anda sudah memiliki folder proyek lokal.)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Instal dependensi:
+Pastikan Anda berada di direktori proyek portfolio-page-builder (atau nama folder lokal Anda), lalu jalankan:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Bash
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+npm install
+Ini akan mengunduh semua pustaka dan paket yang diperlukan.
 
-## Learn More
+Jalankan server pengembangan:
+Setelah semua dependensi terinstal, jalankan perintah ini untuk memulai aplikasi:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Bash
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+npm start
+Akses di browser:
+Aplikasi akan secara otomatis terbuka di browser default Anda pada alamat http://localhost:3000.
 
-### Code Splitting
+Perubahan Desain dari Referensi Figma
+Meskipun fungsionalitas inti dan tata letak utama berpegang pada desain Figma yang disediakan, beberapa perubahan dan penambahan dilakukan untuk meningkatkan UI/UX, memberikan pengalaman yang lebih lengkap, dan memenuhi persyaratan tambahan:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Navigasi Global (Header):
 
-### Analyzing the Bundle Size
+Perubahan: Menambahkan bilah navigasi persisten di bagian atas halaman yang berisi tautan ke halaman "Edit Portfolio" dan "View Portfolio".
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Alasan: Memfasilitasi navigasi yang jelas dan mudah antara dua halaman utama aplikasi, membuat pengalaman pengguna lebih lancar dan aplikasi terasa lebih lengkap.
 
-### Making a Progressive Web App
+Footer:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Perubahan: Menambahkan footer dasar di bagian bawah halaman.
 
-### Advanced Configuration
+Alasan: Praktik web standar yang memberikan kesan kelengkapan dan profesionalisme pada sebuah website.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Tombol Minimize/Maximize Panel (Figma Note 1):
 
-### Deployment
+Perubahan: Mengimplementasikan tombol toggle di pojok kanan atas setiap panel (Editor dan Preview) untuk memperluas atau menyembunyikan panel tersebut. Ketika satu panel dimaksimalkan, panel lainnya akan disembunyikan.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Alasan: Sesuai dengan catatan Figma "minimize dan maksimize", memungkinkan pengguna untuk mengoptimalkan ruang kerja mereka, baik fokus pada pengisian formulir maupun pada pratinjau penuh.
 
-### `npm run build` fails to minify
+Pratinjau Real-time (Figma Note 2):
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Perubahan: Pratinjau di panel samping diperbarui secara otomatis setiap kali ada perubahan input pada formulir, tanpa perlu mengklik tombol "Simpan Perubahan" terlebih dahulu.
+
+Alasan: Mengimplementasikan catatan Figma "Preview diberikan secara 'real-time', tanpa perlu melakukan save terlebih dahulu", memberikan umpan balik instan kepada pengguna saat mereka mengedit portofolio mereka.
+
+Hapus Item Portofolio (Figma Note 3):
+
+Perubahan: Menambahkan tombol "X" yang jelas pada setiap item pengalaman kerja di bagian editor untuk memungkinkan pengguna menghapus item tersebut.
+
+Alasan: Mengimplementasikan catatan Figma "Delete portfolio card item", sebuah fitur krusial untuk manajemen entri portofolio yang efisien.
+
+Desain Halaman View Portfolio:
+
+Perubahan: Halaman View Portfolio telah dirancang sebagai tampilan mandiri yang bersih dan terstruktur untuk menampilkan portofolio yang sudah jadi, bukan hanya sekadar panel pratinjau. Ini mencakup penempatan gambar cover dan profil yang lebih menonjol serta presentasi item portofolio yang elegan.
+
+Alasan: Untuk memberikan tampilan portofolio yang dapat dibagikan dan profesional, sesuai dengan kebutuhan halaman "View Portfolio" yang terpisah.
+
+Validasi Ukuran Gambar:
+
+Perubahan: Menambahkan validasi sederhana pada unggahan gambar untuk membatasi ukuran file maksimal 2MB.
+
+Alasan: Mencegah masalah kinerja dan penggunaan localStorage yang berlebihan, karena gambar Base64 bisa sangat besar.
+
+Pesan Default & Placeholder:
+
+Perubahan: Formulir diinisialisasi dengan nilai default atau placeholder untuk memandu pengguna.
+
+Alasan: Meningkatkan pengalaman pengguna pertama kali dan membuat formulir lebih intuitif.
+```
